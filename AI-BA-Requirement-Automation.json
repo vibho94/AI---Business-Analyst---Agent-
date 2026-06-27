@@ -1,0 +1,462 @@
+{
+  "name": "AI-BA-Requirement-Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        208
+      ],
+      "id": "c129d7d7-2e37-47aa-a9e1-eac7403b9576",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "lIL9rqnmvwAlYG2f",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        576,
+        160
+      ],
+      "id": "ad8409b5-9098-4c69-9cf7-12ecdd58ef44",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "lIL9rqnmvwAlYG2f",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a Detailed User Story based on the FRD\n{{ $json.output }}",
+        "options": {
+          "systemMessage": "You are a Senior Business Analyst with expertise in Warehouse Management Systems (WMS), OMS, Marketplace and E-commerce domains.\n\nConvert the provided requirement into a User Story using EXACTLY the format below.\n\nOutput Format:\n\nRequirement Title\n\n<Generated Requirement Title>\n\nUser Story\n\nAs a <Role>\nI want <Functionality>\nSo that <Business Benefit>\n\nAcceptance Criteria\n\nScenario 1: <Scenario Name>\n\nGiven <Precondition>\nWhen <Action>\nThen <Expected Result>\n\nScenario 2: <Scenario Name>\n\nGiven <Precondition>\nWhen <Action>\nThen <Expected Result>\n\nScenario 3: <Scenario Name>\n\nGiven <Precondition>\nWhen <Action>\nThen <Expected Result>\n\nGenerate all relevant positive, negative and validation scenarios.\n\nBusiness Rules\n\n* Rule 1\n* Rule 2\n* Rule 3\n\nAdditional Instructions:\n\n1. Generate a minimum of 3 Acceptance Criteria scenarios.\n2. Include both positive and negative scenarios whenever applicable.\n3. Include validation rules as acceptance criteria.\n4. Use business-friendly language.\n5. Do not generate Epics.\n6. Do not generate Assumptions.\n7. Do not generate Dependencies.\n8. Do not generate Test Cases separately.\n9. Do not use markdown symbols such as ###, **, or JSON.\n10. Return only the final user story document.\n11. Consider real-world WMS, OMS and Marketplace validations.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        352,
+        -48
+      ],
+      "id": "5ebeed07-fd6b-4c50-92ae-b7f8830e5067",
+      "name": "User Story Generator"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Review the following User Story and Improve it ,if needed\n{{$json.output}}",
+        "options": {
+          "systemMessage": "You are a Senior Product Owner and Business Analyst.\n\nReview the provided user story.\n\nValidate the following:\n\n1. User story follows Agile standards.\n2. Acceptance Criteria are complete.\n3. Positive scenarios are covered.\n4. Negative scenarios are covered.\n5. Validation scenarios are covered.\n6. Business Rules are complete.\n7. Missing edge cases are identified.\n8. User roles are correctly defined.\n9. Audit requirements are included where applicable.\n10. Inventory, Order, Shipment and Marketplace impacts are considered where relevant.\n\nIf information is missing, improve the user story.\n\nReturn the FINAL improved user story only.\n\nDo not explain what was changed.\n\nDo not provide comments.\n\nReturn the complete revised document.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        704,
+        -48
+      ],
+      "id": "97b33ba7-af07-4944-bba2-4c0d105256ce",
+      "name": "User Story Reviewer"
+    },
+    {
+      "parameters": {
+        "formTitle": "User Story Template",
+        "formDescription": "Please provide the relevant title and details to create a User story.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Requirement Title"
+            },
+            {
+              "fieldLabel": "Description"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -256,
+        -48
+      ],
+      "id": "99e9a29b-5cb4-48dc-b0eb-6e7f3fccd24a",
+      "name": "Requirement Input Form",
+      "webhookId": "963c7e70-b867-41a5-9171-ab94e8527c66"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate Detailed Test Case for the following User Story \n{{ $json.output }}",
+        "options": {
+          "systemMessage": "You are a Senior Business  Analyst specializing in WMS, OMS and Marketplace applications.\n\nGenerate detailed test cases based on the provided user story for UAT Testing.\n\nFor each test case provide:\n\nTest Case ID\nScenario\nPreconditions\nTest Steps\nExpected Result\nPriority\n\nCover:\n\n1. Positive Scenarios\n2. Negative Scenarios\n3. Validation Scenarios\n4. Role Based Access Scenarios\n5. Audit Trail Scenarios\n6. Integration Scenarios\n7. Boundary Conditions\n\nReturn the test cases in the following format:\n\nTest Case ID: TC001\n\nScenario: <scenario>\n\nPrecondition: <precondition>\n\nSteps:\n1.\n2.\n3.\n\nExpected Result: <expected result>\n\nPriority:\nHigh/Medium/Low\n\nGenerate comprehensive coverage.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1056,
+        -48
+      ],
+      "id": "6f35a32e-415d-47a5-91ff-47ec33d0a6c7",
+      "name": "Test Case Generator"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        928,
+        160
+      ],
+      "id": "813b11f7-48b7-4250-a4ec-5af19ff08833",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "lIL9rqnmvwAlYG2f",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "vibhor.singhal.vs@gmail.com",
+        "subject": "User Story",
+        "emailType": "text",
+        "message": "Hi, \n\nPlease find the attached Business Requirement Document.  \n\n\nRegards\nVibhor",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2160,
+        224
+      ],
+      "id": "3de992fb-de49-4ebd-a90c-5b97a0cbc981",
+      "name": "Send a message",
+      "webhookId": "90847963-65e4-4a27-b2e1-b8786defabd3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "K6sxPpIW0wYmVx5V",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -192,
+        160
+      ],
+      "id": "da668912-6e6b-4f02-a727-a0589df697ea",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "lIL9rqnmvwAlYG2f",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a Detailed FRD basis on the given :-\n{{ $json['Requirement Title'] }}\n{{ $json.Description }}",
+        "options": {
+          "systemMessage": "You are a Senior Business Analyst.\n\nGenerate a Functional Requirement Document (FRD).\n\nOutput Format:\n\n1. Requirement Title\n2. Business Requirement\n3. Functional Overview\n4. Scope\n5. User Roles\n6. Functional Flow\n7. Process Steps\n8. Business Rules\n9. Validations\n10. API / Integration Impact\n\n\nUse bullet points.\n\nDo not generate user stories."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -48,
+        -48
+      ],
+      "id": "27d2a48f-f2c1-40dc-866c-c3698ef64677",
+      "name": "FRD Generator"
+    },
+    {
+      "parameters": {
+        "jsCode": "const frd = $('FRD Generator').first().json.output;\nconst story = $('User Story Reviewer').first().json.output;\nconst testCases = $('Test Case Generator').first().json.output;\n\nreturn [{\n  json: {\n    emailBody:\n`FUNCTIONAL REQUIREMENT DOCUMENT\n\n${frd}\n\n==================================================\n\nUSER STORY\n\n${story}\n\n==================================================\n\nTEST CASES\n\n${testCases}`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        224
+      ],
+      "id": "ee151ab6-de24-4196-bac3-ea67a5d5ca2a",
+      "name": "Combine Output"
+    },
+    {
+      "parameters": {
+        "folderId": "default",
+        "title": "=BA Requirement Document_{{$now}}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        224
+      ],
+      "id": "ac4f00d8-62d7-4a9b-889f-91ca61889387",
+      "name": "Create a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "1CwmB725DhPM3geU",
+          "name": "Google Docs OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "1soCG9hmiexyBFO__kIEm3Zm-cVAACLK6Q436WBdzW2s",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Combine Output').first().json.emailBody }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        224
+      ],
+      "id": "2081558b-c5fa-4129-8db8-6b660436f79f",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "1CwmB725DhPM3geU",
+          "name": "Google Docs OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Update a document').first().json.documentId }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1904,
+        224
+      ],
+      "id": "303c24ba-38dc-44ea-91ae-dcf31f8f9b45",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "wWoT2MAID46F8bKn",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "User Story Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "User Story Reviewer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User Story Generator": {
+      "main": [
+        [
+          {
+            "node": "User Story Reviewer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User Story Reviewer": {
+      "main": [
+        [
+          {
+            "node": "Test Case Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requirement Input Form": {
+      "main": [
+        [
+          {
+            "node": "FRD Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Case Generator": {
+      "main": [
+        [
+          {
+            "node": "Combine Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Test Case Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "FRD Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FRD Generator": {
+      "main": [
+        [
+          {
+            "node": "User Story Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Output": {
+      "main": [
+        [
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "691b98b4-38d5-45f2-8c73-0b002bb476f6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a4218a490a77601f410070ca4627789d9241bccc0c64488cc4c5ebfb64284ba1"
+  },
+  "nodeGroups": [],
+  "id": "B0BPj7dzkRPKs1jf",
+  "tags": [
+    {
+      "updatedAt": "2026-06-17T17:23:53.412Z",
+      "createdAt": "2026-06-17T17:23:53.412Z",
+      "id": "LXE3SJNFkuYJnPBE",
+      "name": "User Story Creation AI"
+    }
+  ]
+}
